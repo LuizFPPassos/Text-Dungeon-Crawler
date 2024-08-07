@@ -16,6 +16,7 @@
     <None Remove="resources\origap__.ttf" />
     <None Remove="resources\origa___.ttf" />
     <None Remove="resources\square.ttf" />
+    <None Remove="resources\SquareCustom.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,7 @@
     <Resource Include="resources\square.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="resources\SquareCustom.ttf" />
   </ItemGroup>
 
 </Project>

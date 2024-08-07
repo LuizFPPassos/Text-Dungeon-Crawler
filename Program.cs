@@ -7,8 +7,8 @@
 
         public string MainProgram()
         {
-            int mapWidth = 128;
-            int mapHeight = 128;
+            int mapWidth = 100; // default 128
+            int mapHeight = 100; // default 128
             DungeonMap = new char[mapWidth, mapHeight];
 
             // Fill the map with 'X' for walls
@@ -69,14 +69,14 @@
             //rooms.Add(startingRoom);
 
             // Generate rooms ranging from minSize x minSize to maxSize x maxSize cells, rooms cannot overlap with the borders of the map
-            int numRooms = 40;
+            int numRooms = 30; // default 40
             //int minSize = 8;
             //int maxSize = 15;
-            int minWidth = 8;
-            int maxWidth = 16;
-            int minHeight = 10;
-            int maxHeight = 20;
-            int spacing = 3;
+            int minWidth = 5; // default 8
+            int maxWidth = 10; // default 16
+            int minHeight = 10; // default 10
+            int maxHeight = 15; // default 20
+            int spacing = 2; // default 3
 
             //startingRoom.GenerateRooms(numRooms, minSize, maxSize, spacing, mapWidth, mapHeight, rooms);
 
