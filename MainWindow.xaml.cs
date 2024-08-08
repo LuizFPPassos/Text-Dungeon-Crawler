@@ -27,8 +27,12 @@ namespace WpfApp1
         private List<char> forbiddenCharacters;
         private List<char> interactableCharacters;
         private List<string> systemConsole;
-        private bool fogOfWar = true;
+        private static readonly Regex _numericRegex = new Regex("[^0-9]+"); // Regex to match non-numeric characters
+
         bool gameStarted = false;
+
+        private bool fogOfWar = true;
+
         private int stepCounter = 0;
         private int displayRadius;
         private int displayRadiusBase;
@@ -37,7 +41,6 @@ namespace WpfApp1
         private int torchRadiusDefault = 100; // default multiplier for torch radius in %
         private int torchDuration;
         private int torchDurationDefault = 100; // default multiplier for torch duration in %
-        private static readonly Regex _numericRegex = new Regex("[^0-9]+"); // Regex to match non-numeric characters
         private decimal torchRadiusMult;
         private decimal torchDurationMult;
         private int torchDurationBase;
@@ -76,6 +79,9 @@ namespace WpfApp1
 
             UpdateSystemConsole("Welcome!");
             UpdateSystemConsole("Press 'Generate map' then 'Play' to start the game.");
+
+            // set the title of the window
+            Title = "Text Dungeon Crawler";
         }
 
         private void ButtonGenerateMap_Click(object sender, RoutedEventArgs e)
@@ -341,18 +347,24 @@ namespace WpfApp1
             double centerX = playerX * TileWidth; // Assuming each tile is TileWidth pixels wide
             double centerY = playerY * TileHeight; // Assuming each tile is TileHeight pixels tall
 
-            double translateX = Math.Max(0, Math.Min(centerX - canvasWidth / 2, mapWidth * TileWidth - canvasWidth));
-            double translateY = Math.Max(0, Math.Min(centerY - canvasHeight / 2, mapHeight * TileHeight - canvasHeight));
+            // Calculate the maximum translation values to ensure the canvas does not move beyond the map boundaries
+            double maxTranslateX = Math.Max(0, mapWidth * TileWidth - canvasWidth);
+            double maxTranslateY = Math.Max(0, mapHeight * TileHeight - canvasHeight) + 200;
 
+            // Compute the translation needed to center the viewport on the player
+            double translateX = Math.Max(0, Math.Min(centerX - canvasWidth / 2, maxTranslateX));
+            double translateY = Math.Max(0, Math.Min(centerY - canvasHeight / 2, maxTranslateY));
+
+            // Apply the transform to the canvas
             var transform = new TranslateTransform
             {
                 X = -translateX,
                 Y = -translateY
             };
 
-            // Apply the transform to the canvas
             CanvasGame.RenderTransform = transform;
         }
+
 
         private void ResetCanvasViewport()
         {
@@ -377,7 +389,7 @@ namespace WpfApp1
             {
                 Text = map,
                 FontFamily = new FontFamily("Square Custom Modern"),
-                Foreground = Brushes.White,
+                Foreground = Brushes.LightGray,
                 Background = Brushes.Black,
                 TextWrapping = TextWrapping.Wrap,
                 FontSize = TextBlockGameFontSize
@@ -400,7 +412,7 @@ namespace WpfApp1
             {
                 Text = map,
                 FontFamily = new FontFamily("Square Custom Modern"),
-                Foreground = Brushes.White,
+                Foreground = Brushes.LightGray,
                 Background = Brushes.Black,
                 TextWrapping = TextWrapping.Wrap,
                 FontSize = TextBlockGenerationFontSize
