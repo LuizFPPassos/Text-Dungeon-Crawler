@@ -35,7 +35,7 @@ namespace WpfApp1
         private int displayRadiusBaseDefault = 8; // defines the radius around the player to display, ajust as needed
         private int torchRadius;
         private int torchRadiusDefault = 100; // default multiplier for torch radius in %
-        private int torchDuration; 
+        private int torchDuration;
         private int torchDurationDefault = 100; // default multiplier for torch duration in %
         private static readonly Regex _numericRegex = new Regex("[^0-9]+"); // Regex to match non-numeric characters
         private decimal torchRadiusMult;
@@ -46,6 +46,11 @@ namespace WpfApp1
         private int torchAmountSetting;
         private int torchAmountSettingDefault = 10; // defines the amount of torches the player starts with, ajust as needed
         private int torchCount;
+
+        private const int TextBlockGenerationFontSize = 12;
+        private const int TextBlockGameFontSize = 30;
+        private const int TileWidth = 30; // Adjust based on font size
+        private const int TileHeight = 30; // Adjust based on font size
 
         public MainWindow()
         {
@@ -77,7 +82,8 @@ namespace WpfApp1
         {
             UpdateSystemConsole("Generating map...");
 
-            map = program.MainProgram();
+            map = program.MainProgram(); // Generate the map from the main program
+
             // remove all '.', ',', ';' and 'c' characters from the map
             map = map.Replace(".", " ");
             map = map.Replace(",", " ");
@@ -85,10 +91,14 @@ namespace WpfApp1
             //map = map.Replace("Xc", "  "); // double width vertical corridors
             map = map.Replace("c", " ");
 
-            TextBoxConsole.Text = map;
+            ScrollViewerGame.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            ScrollViewerGame.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
-            // disable selecting the textbox
-            TextBoxConsole.IsReadOnly = true;
+            // Clear previous content on the canvas
+            CanvasGame.Children.Clear();
+
+            // Draw the updated map on the canvas
+            DrawGeneratedMapOnCanvas();
 
             // set the opacity of ButtonPlay to 100 and enable it
             ButtonPlay.Opacity = 100;
@@ -126,6 +136,9 @@ namespace WpfApp1
 
             mapMatrix = program.DungeonMap;
 
+            ScrollViewerGame.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            ScrollViewerGame.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
             RefreshMap();
 
             // gets the position of the 'S' from the mapMatrix
@@ -149,22 +162,23 @@ namespace WpfApp1
             RefreshMap();
 
             // activates the keydown event
-            TextBoxConsole.KeyDown += TextBoxConsole_KeyDown;
+            CanvasGame.KeyDown += CanvasGame_KeyDown;
 
-            // focuses on TextBoxConsole
-            TextBoxConsole.Focus();
+            // focuses on CanvasGame
+            CanvasGame.Focus();
         }
 
-        private void TextBoxConsole_KeyDown(object sender, KeyEventArgs e)
+        private void CanvasGame_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
             // if the user presses esc, quits the game
             if (e.Key == Key.Escape)
             {
                 UpdateSystemConsole("Quitting game..." + "\n");
 
-                TextBoxConsole.KeyDown -= TextBoxConsole_KeyDown;
-                TextBoxConsole.Text = "Game over!";
+                CanvasGame.KeyDown -= CanvasGame_KeyDown;
+
+                DrawGameOverText();
 
                 GameOver();
                 return;
@@ -180,11 +194,11 @@ namespace WpfApp1
             }
             else if (e.Key == Key.A)
             {
-                MovePlayer(-1,0);
+                MovePlayer(-1, 0);
             }
             else if (e.Key == Key.D)
             {
-                MovePlayer(1,0);
+                MovePlayer(1, 0);
             }
 
             if (e.Key == Key.Enter)
@@ -194,40 +208,107 @@ namespace WpfApp1
 
         }
 
+        private void DrawGameOverText()
+        {
+            // Clear the canvas before drawing the new text
+            CanvasGame.Children.Clear();
+
+            // Create a new TextBlock for displaying "Game over!"
+            TextBlock gameOverText = new TextBlock
+            {
+                Text = "Game over!",
+                Foreground = Brushes.Red,
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            // Add the TextBlock to the Canvas
+            CanvasGame.Children.Add(gameOverText);
+
+            // Handle the layout update to ensure proper positioning
+            gameOverText.Loaded += (s, e) =>
+            {
+                // Center the text within the canvas
+                double canvasWidth = ScrollViewerGame.ActualWidth;
+                double canvasHeight = ScrollViewerGame.ActualHeight;
+                double textWidth = gameOverText.ActualWidth;
+                double textHeight = gameOverText.ActualHeight;
+
+                Canvas.SetLeft(gameOverText, (canvasWidth - textWidth) / 2);
+                Canvas.SetTop(gameOverText, (canvasHeight - textHeight) / 2);
+            };
+
+            ResetCanvasViewport();
+        }
+
+        private void DrawGameWonText()
+        {
+            // Clear the canvas before drawing the new text
+            CanvasGame.Children.Clear();
+
+            // Create a new TextBlock for displaying "Game won!"
+            TextBlock gameWonText = new TextBlock
+            {
+                Text = "Game won!",
+                Foreground = Brushes.Green,
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            // Add the TextBlock to the Canvas
+            CanvasGame.Children.Add(gameWonText);
+
+            // Handle the layout update to ensure proper positioning
+            gameWonText.Loaded += (s, e) =>
+            {
+                // Center the text within the canvas
+                double canvasWidth = ScrollViewerGame.ActualWidth;
+                double canvasHeight = ScrollViewerGame.ActualHeight;
+                double textWidth = gameWonText.ActualWidth;
+                double textHeight = gameWonText.ActualHeight;
+
+                Canvas.SetLeft(gameWonText, (canvasWidth - textWidth) / 2);
+                Canvas.SetTop(gameWonText, (canvasHeight - textHeight) / 2);
+            };
+
+            ResetCanvasViewport();
+        }
+
         private void RefreshMap()
         {
             map = "";
             mapWidth = mapMatrix.GetLength(0);
             mapHeight = mapMatrix.GetLength(1);
 
-            if (fogOfWar == true)
+            // Clear previous content on the canvas
+            CanvasGame.Children.Clear();
+
+            if (fogOfWar)
             {
-                // Calculate player's position in mapMatrix
                 int playerPosX = playerX;
                 int playerPosY = playerY;
 
-                // Loop through each position in the mapMatrix
                 for (int y = 0; y < mapHeight; y++)
                 {
                     for (int x = 0; x < mapWidth; x++)
                     {
-                        // Calculate distance from player position
                         int dx = x - playerPosX;
                         int dy = y - playerPosY;
                         double distanceSquared = dx * dx + dy * dy;
                         int distance = (int)Math.Sqrt(distanceSquared);
 
-                        // If within display radius or it's the player's current position, display character
                         if (distance <= displayRadius || (x == playerPosX && y == playerPosY))
                         {
                             map += mapMatrix[y, x];
                         }
                         else
                         {
-                            map += ' '; // Replace characters outside the display radius with space
+                            map += ' ';
                         }
                     }
-                    map += "\n"; // Add new line after each row
+                    map += "\n";
                 }
             }
             else
@@ -236,24 +317,99 @@ namespace WpfApp1
                 {
                     for (int j = 0; j < mapHeight; j++)
                     {
-                        // adds the character to the string
                         map += mapMatrix[i, j];
                     }
-                    // adds a new line to the string
                     map += "\n";
                 }
             }
 
-            // remove all '.', ',', ';' and 'c' characters from the map
             map = map.Replace(".", " ");
             map = map.Replace(",", " ");
             map = map.Replace(";", " ");
-            //map = map.Replace("Xc", "  "); // double width vertical corridors
             map = map.Replace("c", " ");
 
-            TextBoxConsole.Text = map;
+            // Draw the map on the canvas
+            DrawGameMapOnCanvas();
         }
 
+        private void AdjustCanvasViewport()
+        {
+            // Compute the visible area based on player's position and display radius
+            double canvasWidth = CanvasGame.ActualWidth;
+            double canvasHeight = CanvasGame.ActualHeight;
+
+            double centerX = playerX * TileWidth; // Assuming each tile is TileWidth pixels wide
+            double centerY = playerY * TileHeight; // Assuming each tile is TileHeight pixels tall
+
+            double translateX = Math.Max(0, Math.Min(centerX - canvasWidth / 2, mapWidth * TileWidth - canvasWidth));
+            double translateY = Math.Max(0, Math.Min(centerY - canvasHeight / 2, mapHeight * TileHeight - canvasHeight));
+
+            var transform = new TranslateTransform
+            {
+                X = -translateX,
+                Y = -translateY
+            };
+
+            // Apply the transform to the canvas
+            CanvasGame.RenderTransform = transform;
+        }
+
+        private void ResetCanvasViewport()
+        {
+            // Reset the canvas viewport to the top-left corner
+            var transform = new TranslateTransform
+            {
+                X = 0,
+                Y = 0
+            };
+
+            // Apply the transform to the canvas
+            CanvasGame.RenderTransform = transform;
+        }
+
+        // for black and white map:
+        
+        private void DrawGameMapOnCanvas()
+        {
+            CanvasGame.Children.Clear();
+            var mapLines = map.Split('\n');
+            var textBlock = new TextBlock
+            {
+                Text = map,
+                FontFamily = new FontFamily("Square Custom Modern"),
+                Foreground = Brushes.White,
+                Background = Brushes.Black,
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = TextBlockGameFontSize
+            };
+
+            CanvasGame.Children.Add(textBlock);
+            Canvas.SetLeft(textBlock, 0);
+            Canvas.SetTop(textBlock, 0);
+
+            // Adjust the canvas to follow the player
+            AdjustCanvasViewport();
+        }
+        
+
+        private void DrawGeneratedMapOnCanvas()
+        {
+            CanvasGame.Children.Clear();
+            var mapLines = map.Split('\n');
+            var textBlock = new TextBlock
+            {
+                Text = map,
+                FontFamily = new FontFamily("Square Custom Modern"),
+                Foreground = Brushes.White,
+                Background = Brushes.Black,
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = TextBlockGenerationFontSize
+            };
+
+            CanvasGame.Children.Add(textBlock);
+            Canvas.SetLeft(textBlock, 0);
+            Canvas.SetTop(textBlock, 0);
+        }
 
         private void MovePlayer(int deltaX, int deltaY)
         {
@@ -272,7 +428,7 @@ namespace WpfApp1
                     playerX = newPlayerX;
                     playerY = newPlayerY;
                     mapMatrix[playerY, playerX] = 'O'; // Set new position in mapMatrix
-                    
+
                     RefreshMap(); // Update display
 
                     //MessageBox.Show($"Player position: {playerY},{playerX}");
@@ -389,7 +545,8 @@ namespace WpfApp1
                         else if (mapMatrix[playerY + i, playerX + j] == 'E')
                         {
                             // interact with the exit
-                            TextBoxConsole.Text = "You have reached the exit!";
+
+                            DrawGameWonText();
 
                             UpdateSystemConsole("You have reached the exit!" + "\n");
 
@@ -424,7 +581,7 @@ namespace WpfApp1
                 RefreshMap();
             }
 
-            TextBoxConsole.Focus();
+            CanvasGame.Focus();
         }
 
         private void TextBoxTorchRadius_GotFocus(object sender, RoutedEventArgs e)
@@ -569,7 +726,7 @@ namespace WpfApp1
             if (torchCount == 0)
             {
                 UpdateSystemConsole("No torches left in inventory.");
-                TextBoxConsole.Focus();
+                CanvasGame.Focus();
                 return;
             }
             else
@@ -582,7 +739,7 @@ namespace WpfApp1
                 displayRadius = (int)Math.Ceiling(displayRadiusBase * torchRadiusMult);
                 UpdateSystemConsole($"Torch radius: {displayRadius}.");
                 RefreshMap();
-                TextBoxConsole.Focus();
+                CanvasGame.Focus();
             }
         }
 
