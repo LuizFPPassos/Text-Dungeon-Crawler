@@ -36,24 +36,28 @@ namespace WpfApp1
         private int stepCounter = 0;
         private int displayRadius;
         private int displayRadiusBase;
-        private int displayRadiusBaseDefault = 8; // defines the radius around the player to display, ajust as needed
+        private const int displayRadiusBaseDefault = 8; // defines the radius around the player to display, ajust as needed
         private int torchRadius;
-        private int torchRadiusDefault = 100; // default multiplier for torch radius in %
+        private const int torchRadiusDefault = 100; // default multiplier for torch radius in %
         private int torchDuration;
-        private int torchDurationDefault = 100; // default multiplier for torch duration in %
+        private const int torchDurationDefault = 100; // default multiplier for torch duration in %
         private decimal torchRadiusMult;
         private decimal torchDurationMult;
         private int torchDurationBase;
-        private int torchDurationBaseDefault = 50; // defines the base duration of a torch in steps, ajust as needed
+        private const int torchDurationBaseDefault = 50; // defines the base duration of a torch in steps, ajust as needed
         private int torchDurationSteps;
         private int torchAmountSetting;
-        private int torchAmountSettingDefault = 10; // defines the amount of torches the player starts with, ajust as needed
+        private const int torchAmountSettingDefault = 10; // defines the amount of torches the player starts with, ajust as needed
         private int torchCount;
 
         private const int TextBlockGenerationFontSize = 12;
-        private const int TextBlockGameFontSize = 30;
-        private const int TileWidth = 30; // Adjust based on font size
-        private const int TileHeight = 30; // Adjust based on font size
+        //private const int TextBlockGameFontSizeDefault = 30; // for a set default font size for game view
+        private const int SliderGameZoomDefault = 75; // for a set default zoom % value for game view
+        private const int TextBlockGameMaxFontSizeDefault = 50;
+
+        private int TextBlockGameFontSize;
+        private int TileWidth;
+        private int TileHeight;
 
         public MainWindow()
         {
@@ -61,6 +65,19 @@ namespace WpfApp1
             forbiddenCharacters = new List<char> { 'X', 'T', 'E' };
             interactableCharacters = new List<char> { 'T', 'E' };
             systemConsole = new List<string>();
+
+            // set the default values for map display
+
+            // for a set default font size for game view, and setting the default slider value to correspond to it
+            //TextBlockGameFontSize = TextBlockGameFontSizeDefault;
+            //SliderGameZoom.Value = (int)(100 * (TextBlockGameFontSizeDefault - TextBlockGenerationFontSize) / (double)(TextBlockGameMaxFontSizeDefault - TextBlockGenerationFontSize));
+
+            // for a set default zoom % value for game view
+            SliderGameZoom.Value = SliderGameZoomDefault;
+
+            TileWidth = TextBlockGameFontSize;
+            TileHeight = TextBlockGameFontSize;
+            
 
             // set the default values for torch radius, duration and amount
             torchRadius = torchRadiusDefault;
@@ -512,6 +529,9 @@ namespace WpfApp1
                             //MessageBox.Show($"Found teleporter on position: {playerY + i},{playerX + j}");
                             //MessageBox.Show($"Teleporting! {playerY},{playerX}");
 
+                            int teleporterX = playerX + j;
+                            int teleporterY = playerY + i;
+
                             UpdateSystemConsole("Interacting with teleporter...");
 
                             // interact with the teleporter
@@ -519,11 +539,13 @@ namespace WpfApp1
                             Random random = new Random();
                             int randomX = 0;
                             int randomY = 0;
-                            while (mapMatrix[randomY, randomX] != 'T')
+                            do
                             {
                                 randomX = random.Next(0, mapWidth);
                                 randomY = random.Next(0, mapHeight);
                             }
+                            while (mapMatrix[randomY, randomX] != 'T' || (randomX == teleporterX && randomY == teleporterY));
+
                             // remove the 'O' from the previous position
                             mapMatrix[playerY, playerX] = ' ';
 
@@ -566,11 +588,9 @@ namespace WpfApp1
                             return;
 
                         }
-
                     }
                 }
             }
-
         }
 
         private void CheckBoxFogOfWar_Click(object sender, RoutedEventArgs e)
@@ -578,12 +598,26 @@ namespace WpfApp1
             if (fogOfWar == true)
             {
                 fogOfWar = false;
+
+                // if fog of war is disabled, sets the font size to the generation font size to zoom-out the map
+                // moved to slider instead
+                //TextBlockGameFontSize = TextBlockGenerationFontSize; 
+                //TileWidth = TextBlockGameFontSize;
+                //TileHeight = TextBlockGameFontSize;
+
                 //MessageBox.Show("Fog of war disabled.");
                 UpdateSystemConsole("Fog of war disabled.");
             }
             else
             {
                 fogOfWar = true;
+
+                // if fog of war is enabled, sets the font size to the default game font size to zoom-in the map
+                // moved to slider instead
+                //TextBlockGameFontSize = TextBlockGameFontSizeDefault;
+                //TileWidth = TextBlockGameFontSize;
+                //TileHeight = TextBlockGameFontSize;
+
                 //MessageBox.Show("Fog of war enabled.");
                 UpdateSystemConsole("Fog of war enabled.");
             }
@@ -755,5 +789,43 @@ namespace WpfApp1
             }
         }
 
+        private void SliderGameZoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            TextBlockGameFontSize = TextBlockGenerationFontSize + (int)((TextBlockGameMaxFontSizeDefault - TextBlockGenerationFontSize) * (SliderGameZoom.Value / 100.0));
+            TileWidth = TextBlockGameFontSize;
+            TileHeight = TextBlockGameFontSize;
+            if (gameStarted == true)
+            {
+                RefreshMap();
+            }
+            CanvasGame.Focus();
+        }
+
+        private void SliderGameZoom_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // for a set default font size for game view, and setting the default slider value to correspond to it
+            //SliderGameZoom.Value = (int)(100 * (TextBlockGameFontSizeDefault - TextBlockGenerationFontSize) / (double)(TextBlockGameMaxFontSizeDefault - TextBlockGenerationFontSize));
+
+            // for a set default zoom % value for game view
+            SliderGameZoom.Value = SliderGameZoomDefault;
+        }
+
+        private void TextBoxTorchRadius_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBoxTorchRadius.Text = torchRadiusDefault.ToString();
+            CanvasGame.Focus();
+        }
+
+        private void TextBoxTorchDuration_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBoxTorchDuration.Text = torchDurationDefault.ToString();
+            CanvasGame.Focus();
+        }
+
+        private void TextBoxTorchAmount_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBoxTorchAmount.Text = torchAmountSettingDefault.ToString();
+            CanvasGame.Focus();
+        }
     }
 }
