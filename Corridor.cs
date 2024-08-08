@@ -1,4 +1,4 @@
-﻿namespace WpfApp1
+﻿namespace Text_Dungeon_Crawler
 {
     internal class Corridor
     {

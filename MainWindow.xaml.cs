@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Media;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,8 +10,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
-namespace WpfApp1
+namespace Text_Dungeon_Crawler
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,6 +30,10 @@ namespace WpfApp1
         private List<char> interactableCharacters;
         private List<string> systemConsole;
         private static readonly Regex _numericRegex = new Regex("[^0-9]+"); // Regex to match non-numeric characters
+
+        SoundManager soundManager = new SoundManager();
+        private float masterVolume;
+        private int SliderSoundVolumeDefault = 100;
 
         bool gameStarted = false;
 
@@ -62,22 +68,25 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+
             forbiddenCharacters = new List<char> { 'X', 'T', 'E' };
             interactableCharacters = new List<char> { 'T', 'E' };
             systemConsole = new List<string>();
 
-            // set the default values for map display
+            // sets the default values for map display
 
-            // for a set default font size for game view, and setting the default slider value to correspond to it
+            // sets the default font size for game view, and setting the default slider value to correspond to it
             //TextBlockGameFontSize = TextBlockGameFontSizeDefault;
             //SliderGameZoom.Value = (int)(100 * (TextBlockGameFontSizeDefault - TextBlockGenerationFontSize) / (double)(TextBlockGameMaxFontSizeDefault - TextBlockGenerationFontSize));
 
-            // for a set default zoom % value for game view
+            // sets the default zoom % value for game view
             SliderGameZoom.Value = SliderGameZoomDefault;
 
             TileWidth = TextBlockGameFontSize;
             TileHeight = TextBlockGameFontSize;
-            
+
+            // sets the default value for sound volume
+            SliderSoundVolume.Value = SliderSoundVolumeDefault;
 
             // set the default values for torch radius, duration and amount
             torchRadius = torchRadiusDefault;
@@ -483,6 +492,9 @@ namespace WpfApp1
                         UpdateSystemConsole("Moving west...");
                     }
 
+                    // Play a random step sound
+                    soundManager.PlayStepSound();
+
                     stepCounter++;
                     // decrease the display radius every 20 steps until it reaches 0
                     if (stepCounter % torchDurationSteps == 0 && displayRadius > 0)
@@ -567,6 +579,9 @@ namespace WpfApp1
                                         //MessageBox.Show($"Player position: {playerY},{playerX}");
 
                                         UpdateSystemConsole($"Teleporting to position: {randomY},{randomX}");
+
+                                        // Play the "teleport" sound
+                                        soundManager.PlaySound("teleport");
 
                                         mapMatrix[playerY, playerX] = 'O';
                                         RefreshMap();
@@ -780,6 +795,9 @@ namespace WpfApp1
                 torchCount--;
                 TextBoxTorchAmount.Text = torchCount.ToString();
 
+                // Play the "ignite" sound
+                soundManager.PlaySound("ignite");
+
                 UpdateSystemConsole("Torch used.");
                 UpdateSystemConsole($"Torch amount left: {torchCount}.");
                 displayRadius = (int)Math.Ceiling(displayRadiusBase * torchRadiusMult);
@@ -801,6 +819,13 @@ namespace WpfApp1
             CanvasGame.Focus();
         }
 
+        private void SliderSoundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            masterVolume = (float)(SliderSoundVolume.Value / 100.0);
+            soundManager.MasterVolume = masterVolume;
+            CanvasGame.Focus();
+        }
+
         private void SliderGameZoom_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // for a set default font size for game view, and setting the default slider value to correspond to it
@@ -808,6 +833,12 @@ namespace WpfApp1
 
             // for a set default zoom % value for game view
             SliderGameZoom.Value = SliderGameZoomDefault;
+        }
+
+        private void SliderSoundVolume_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            SliderSoundVolume.Value = SliderSoundVolumeDefault;
+            CanvasGame.Focus();
         }
 
         private void TextBoxTorchRadius_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -827,5 +858,6 @@ namespace WpfApp1
             TextBoxTorchAmount.Text = torchAmountSettingDefault.ToString();
             CanvasGame.Focus();
         }
+
     }
 }

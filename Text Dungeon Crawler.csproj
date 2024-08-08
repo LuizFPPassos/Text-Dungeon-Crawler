@@ -11,14 +11,41 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="resources\BlockwayPixies-8K2D.ttf" />
-    <None Remove="resources\ElementalEnd-3oYp.ttf" />
-    <None Remove="resources\Hokjesgeest.otf" />
-    <None Remove="resources\Judera-Flat.ttf" />
-    <None Remove="resources\origap__.ttf" />
-    <None Remove="resources\origa___.ttf" />
-    <None Remove="resources\square.ttf" />
+    <None Remove="resources\sounds\step\step1.wav" />
+    <None Remove="resources\sounds\step\step2.wav" />
+    <None Remove="resources\sounds\step\step3.wav" />
+    <None Remove="resources\sounds\step\step4.wav" />
+    <None Remove="resources\sounds\step\step5.wav" />
+    <None Remove="resources\sounds\step\step6.wav" />
+    <None Remove="resources\sounds\teleport\teleport.wav" />
     <None Remove="resources\SquareCustom.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="resources\sounds\fire\ignite.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step4.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step5.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\step\step6.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sounds\teleport\teleport.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,28 +61,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="resources\BlockwayPixies-8K2D.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\ElementalEnd-3oYp.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\Hokjesgeest.otf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\Judera-Flat.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\origap__.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\origa___.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="resources\square.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
     <EmbeddedResource Include="resources\SquareCustom.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +84,9 @@
     <None Update="resources\Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+    </None>
+    <None Update="resources\sounds\fire\ignite.mp3">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
