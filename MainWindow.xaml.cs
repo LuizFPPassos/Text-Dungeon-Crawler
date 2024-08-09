@@ -822,7 +822,7 @@ namespace Text_Dungeon_Crawler
         private void SliderSoundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             masterVolume = (float)(SliderSoundVolume.Value / 100.0);
-            soundManager.MasterVolume = masterVolume;
+            //soundManager.SetMasterVolume(masterVolume); // for SoundManager_irrKlang.cs
             CanvasGame.Focus();
         }
 
@@ -833,6 +833,7 @@ namespace Text_Dungeon_Crawler
 
             // for a set default zoom % value for game view
             SliderGameZoom.Value = SliderGameZoomDefault;
+            CanvasGame.Focus();
         }
 
         private void SliderSoundVolume_MouseDoubleClick(object sender, MouseButtonEventArgs e)

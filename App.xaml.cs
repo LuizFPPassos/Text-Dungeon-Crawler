@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace WpfApp1
+namespace Text_Dungeon_Crawler
 {
     /// <summary>
     /// Interaction logic for App.xaml

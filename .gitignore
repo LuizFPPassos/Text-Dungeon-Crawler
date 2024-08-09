@@ -5,6 +5,7 @@
 
 # Projet-specific
 # resources/wip/
+libs/
 
 # User-specific files
 *.rsuser

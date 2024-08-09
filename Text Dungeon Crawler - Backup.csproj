@@ -65,9 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="irrKlang.NET4">
-      <HintPath>irrKlang.NET4.dll</HintPath>
-    </Reference>
+    <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,18 +77,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="irrKlang.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="irrKlang.exp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="irrKlang.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="irrKlang.NET4.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
