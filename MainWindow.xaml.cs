@@ -108,6 +108,10 @@ namespace Text_Dungeon_Crawler
 
             // set the title of the window
             Title = "Text Dungeon Crawler";
+
+            this.Closing += MainWindow_Closing;
+
+            soundManager.PlayMusicTimer(); // plays the background music
         }
 
         private void ButtonGenerateMap_Click(object sender, RoutedEventArgs e)
@@ -192,6 +196,9 @@ namespace Text_Dungeon_Crawler
             mapMatrix[playerY, playerX] = 'O';
 
             RefreshMap();
+
+            // Plays ambient sounds
+            soundManager.PlayAmbientSoundTimer();
 
             // activates the keydown event
             CanvasGame.KeyDown += CanvasGame_KeyDown;
@@ -773,6 +780,8 @@ namespace Text_Dungeon_Crawler
 
             ButtonUseTorch.IsEnabled = false;
             ButtonUseTorch.Opacity = 50;
+
+            soundManager.StopAmbientSoundTimer(); // stops ambient sounds
         }
 
         private void UpdateSystemConsole(string message)
@@ -822,7 +831,7 @@ namespace Text_Dungeon_Crawler
         private void SliderSoundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             masterVolume = (float)(SliderSoundVolume.Value / 100.0);
-            //soundManager.SetMasterVolume(masterVolume); // for SoundManager_irrKlang.cs
+            soundManager.SetMasterVolume(masterVolume); // for SoundManager_irrKlang.cs
             CanvasGame.Focus();
         }
 
@@ -858,6 +867,19 @@ namespace Text_Dungeon_Crawler
         {
             TextBoxTorchAmount.Text = torchAmountSettingDefault.ToString();
             CanvasGame.Focus();
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            soundManager.StopMusicTimer();
+            //MessageBox.Show("Closing the game...");
+            StopSoundEngine();
+        }
+
+        private void StopSoundEngine()
+        {
+            //MessageBox.Show("Stopping sound engine...");
+            soundManager.Dispose();
         }
 
     }
