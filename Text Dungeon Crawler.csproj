@@ -79,9 +79,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ikpMP3.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="irrKlang.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -150,8 +147,17 @@
     <None Update="resources\sounds\ambient\amb_dungeon_fort_generic.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="resources\sounds\door\stone_close.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\door\stone_open.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="resources\sounds\fire\ignite.mp3">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\13.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="resources\sounds\music\Daggerfall Soundtrack HQ Remake Theme 005.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -171,6 +177,9 @@
     <None Update="resources\sounds\music\Daggerfall Soundtrack HQ Remake Theme 010.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="resources\sounds\music\far.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="resources\sounds\music\fdungeon_01_v2.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -180,7 +189,73 @@
     <None Update="resources\sounds\music\fdungeon_01_v2.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="resources\sounds\music\menu1.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\menu\creative2.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\menu\piano1.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\nether1.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\nether3.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\music\ward.ogg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="resources\sounds\silence.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_001.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_002.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_003.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_004.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_005.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_006.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_007.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_008.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_009.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_010.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_011.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_012.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_013.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_014.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_015.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\sounds\step\stone\fst_stone_016.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
