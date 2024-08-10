@@ -111,7 +111,7 @@ namespace Text_Dungeon_Crawler
 
             this.Closing += MainWindow_Closing;
 
-            soundManager.PlayMusicTimer(); // plays the background music
+            soundManager.PlayMusicTimer("menumusic"); // plays the menu music
         }
 
         private void ButtonGenerateMap_Click(object sender, RoutedEventArgs e)
@@ -197,8 +197,9 @@ namespace Text_Dungeon_Crawler
 
             RefreshMap();
 
-            // Plays ambient sounds
-            soundManager.PlayAmbientSoundTimer();
+            soundManager.PlaySound("doorstoneclose");
+            soundManager.PlayMusicTimer("music"); // Plays the in-game music
+            soundManager.PlayAmbientSoundTimer(); // Plays ambient sounds
 
             // activates the keydown event
             CanvasGame.KeyDown += CanvasGame_KeyDown;
@@ -601,11 +602,9 @@ namespace Text_Dungeon_Crawler
                         else if (mapMatrix[playerY + i, playerX + j] == 'E')
                         {
                             // interact with the exit
-
+                            soundManager.PlaySound("doorstoneopen");
                             DrawGameWonText();
-
                             UpdateSystemConsole("You have reached the exit!" + "\n");
-
                             GameOver();
                             return;
 
@@ -782,6 +781,7 @@ namespace Text_Dungeon_Crawler
             ButtonUseTorch.Opacity = 50;
 
             soundManager.StopAmbientSoundTimer(); // stops ambient sounds
+            soundManager.PlayMusicTimer("menumusic"); // plays the menu music
         }
 
         private void UpdateSystemConsole(string message)

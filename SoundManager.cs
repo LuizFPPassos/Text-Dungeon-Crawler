@@ -11,6 +11,26 @@ namespace Text_Dungeon_Crawler
             // fx
             { "ignite", "resources/sounds/fire/ignite.wav" },
             { "teleport", "resources/sounds/teleport/teleport.wav" },
+
+            // step
+            
+            { "stepstone1", "resources/sounds/step/stone/fst_stone_001.wav" },
+            { "stepstone2", "resources/sounds/step/stone/fst_stone_002.wav" },
+            { "stepstone3", "resources/sounds/step/stone/fst_stone_003.wav" },
+            { "stepstone4", "resources/sounds/step/stone/fst_stone_004.wav" },
+            { "stepstone5", "resources/sounds/step/stone/fst_stone_005.wav" },
+            { "stepstone6", "resources/sounds/step/stone/fst_stone_006.wav" },
+            { "stepstone7", "resources/sounds/step/stone/fst_stone_007.wav" },
+            { "stepstone8", "resources/sounds/step/stone/fst_stone_008.wav" },
+            { "stepstone9", "resources/sounds/step/stone/fst_stone_009.wav" },
+            { "stepstone10", "resources/sounds/step/stone/fst_stone_010.wav" },
+            { "stepstone11", "resources/sounds/step/stone/fst_stone_011.wav" },
+            { "stepstone12", "resources/sounds/step/stone/fst_stone_012.wav" },
+            { "stepstone13", "resources/sounds/step/stone/fst_stone_013.wav" },
+            { "stepstone14", "resources/sounds/step/stone/fst_stone_014.wav" },
+            { "stepstone15", "resources/sounds/step/stone/fst_stone_015.wav" },
+            { "stepstone16", "resources/sounds/step/stone/fst_stone_016.wav" },
+            
             { "step1", "resources/sounds/step/step1.wav" },
             { "step2", "resources/sounds/step/step2.wav" },
             { "step3", "resources/sounds/step/step3.wav" },
@@ -40,21 +60,55 @@ namespace Text_Dungeon_Crawler
             { "music1", "resources/sounds/music/Daggerfall Soundtrack HQ Remake Theme 005.ogg" },
             { "music2", "resources/sounds/music/Daggerfall Soundtrack HQ Remake Theme 010.ogg" },
             { "music3", "resources/sounds/music/fdungeon_01_v2.ogg" },
+            { "music4", "resources/sounds/music/13.ogg" },
+            { "music5", "resources/sounds/music/far.ogg" },
+            { "music6", "resources/sounds/music/menu1.ogg" },
+            { "music7", "resources/sounds/music/nether1.ogg" },
+            { "music8", "resources/sounds/music/nether3.ogg" },
+            { "music9", "resources/sounds/music/ward.ogg" },
+
+            // menu music
+            { "menumusic1", "resources/sounds/music/menu/creative2.ogg" },
+            { "menumusic2", "resources/sounds/music/menu/piano1.ogg" },
 
             // silence
-            { "silence", "resources/sounds/silence.wav" }
+            { "silence", "resources/sounds/silence.wav" },
+
+            // door
+            { "doorstoneopen", "resources/sounds/door/stone_open.wav" },
+            { "doorstoneclose", "resources/sounds/door/stone_close.wav" }
 
             // Add more sounds here as needed
         };
 
         private readonly List<string> _stepSounds = new List<string>
         {
+            
             "step1",
             "step2",
             "step3",
             "step4",
             "step5",
             "step6"
+            
+            /*
+            "stepstone1",
+            "stepstone2",
+            "stepstone3",
+            "stepstone4",
+            "stepstone5",     
+            "stepstone6",
+            "stepstone7",
+            "stepstone8",
+            "stepstone9",
+            "stepstone10",
+            "stepstone11",
+            "stepstone12",
+            "stepstone13",
+            "stepstone14",
+            "stepstone15",
+            "stepstone16"
+            */
             // Add more sound names here as needed
         };
 
@@ -88,7 +142,20 @@ namespace Text_Dungeon_Crawler
         {
             "music1",
             "music2",
-            "music3"
+            "music3",
+            "music4",
+            "music5",
+            "music6",
+            "music7",
+            "music8",
+            "music9"
+            // Add more sound names here as needed
+        };
+
+        private readonly List<string> _menuMusicSounds = new List<string>
+        {
+            "menumusic1",
+            "menumusic2"
             // Add more sound names here as needed
         };
 
@@ -99,7 +166,6 @@ namespace Text_Dungeon_Crawler
         System.Timers.Timer timerAmbient = new System.Timers.Timer();
         public ISound music;
         System.Timers.Timer timerMusic = new System.Timers.Timer();
-
 
         public SoundManager()
         {
@@ -113,6 +179,7 @@ namespace Text_Dungeon_Crawler
             }
 
             timerAmbient.Interval = 1000;
+            timerMusic.Interval = 1000;
         }
 
         public void SetMasterVolume(float volume)
@@ -122,18 +189,14 @@ namespace Text_Dungeon_Crawler
 
         public void PlayStepSound()
         {
-            // Select a random sound name from the list
-            string randomSoundName = _stepSounds[_random.Next(_stepSounds.Count)];
-
-            // Play the selected sound
-            PlaySound(randomSoundName);
+            PlayRandomSound("step");
         }
 
 
         // timer that runs and checks if the ambient sound has finished playing
         public void PlayAmbientSoundTimer()
         {
-            PlayAmbientSound();
+            PlayRandomSound("ambient");
             //MessageBox.Show("Playing ambient sound");
 
             timerAmbient.Elapsed += (sender, args) =>
@@ -142,16 +205,17 @@ namespace Text_Dungeon_Crawler
                 if (ambientSound.Finished)
                 {
                     //MessageBox.Show("Ambient sound finished playing");
-                    PlayAmbientSound();
+                    PlayRandomSound("ambient");
                 }
             };
             //MessageBox.Show("Starting timer");
             timerAmbient.Start();
         }
 
-        public void PlayMusicTimer()
+        public void PlayMusicTimer(string musicType)
         {
-            PlayMusic();
+            StopMusicTimer();
+            PlayRandomSound(musicType);
             //MessageBox.Show("Playing music");
 
             timerMusic.Elapsed += (sender, args) =>
@@ -160,7 +224,7 @@ namespace Text_Dungeon_Crawler
                 if (music.Finished)
                 {
                     //MessageBox.Show("Music finished playing");
-                    PlayMusic();
+                    PlayRandomSound(musicType);
                 }
             };
             //MessageBox.Show("Starting timer");
@@ -181,15 +245,40 @@ namespace Text_Dungeon_Crawler
         {
             //MessageBox.Show("Stopping timer");
             timerMusic.Stop();
-            //MessageBox.Show("Stopping Music");
-            music.Stop();
+            if (music != null)
+            {
+                //MessageBox.Show("Stopping music");
+                music.Stop();
+            }
             //_soundEngine.StopAllSounds(); // stop all sounds
         }
 
-        public void PlayAmbientSound()
+        public void PlayRandomSound(string randomSoundType)
         {
+            List<string> randomSoundsList;
+            switch (randomSoundType)
+            {
+                case "ambient":
+                    randomSoundsList = _ambientSounds;
+                    break;
+                case "music":
+                    randomSoundsList = _musicSounds;
+                    break;
+                case "menumusic":
+                    randomSoundsList = _menuMusicSounds;
+                    break;
+                case
+                    "step":
+                    randomSoundsList = _stepSounds;
+                    break;
+                default:
+                    Console.WriteLine($"Sound type '{randomSoundType}' not recognized.");
+                    MessageBox.Show("Sound type not recognized. Please make sure the sound type is correct.");
+                    return;
+            }
+
             // Select a random sound name from the list
-            string randomSoundName = _ambientSounds[_random.Next(_ambientSounds.Count)];
+            string randomSoundName = randomSoundsList[_random.Next(randomSoundsList.Count)];
 
             if (!_sounds.TryGetValue(randomSoundName.ToLower(), out ISoundSource soundSource))
             {
@@ -197,44 +286,26 @@ namespace Text_Dungeon_Crawler
                 MessageBox.Show("Sound name not recognized. Please make sure the sound name is correct.");
                 return;
             }
-
-            ambientSound = _soundEngine.Play2D(soundSource, false, false, false);
-            //MessageBox.Show("Playing ambient sound" + randomSoundName);
-        }
-
-        public void PlayMusic()
-        {
-            // Select a random sound name from the list
-            string randomSoundName = _musicSounds[_random.Next(_musicSounds.Count)];
-
-            if (!_sounds.TryGetValue(randomSoundName.ToLower(), out ISoundSource soundSource))
+            switch(randomSoundType)
             {
-                Console.WriteLine($"Sound name '{randomSoundName}' not recognized.");
-                MessageBox.Show("Sound name not recognized. Please make sure the sound name is correct.");
-                return;
+                case "ambient":
+                    ambientSound = _soundEngine.Play2D(soundSource, false, false, false);
+                    break;
+                case "music":
+                    music = _soundEngine.Play2D(soundSource, false, false, false);
+                    break;
+                case "menumusic":
+                    music = _soundEngine.Play2D(soundSource, false, false, false);
+                    break;
+                case "step":
+                    ISound sound = _soundEngine.Play2D(soundSource, false, false, false);
+                    //PlaySound(randomSoundName);
+                    break;
+                default:
+                    break;
             }
-
-            music = _soundEngine.Play2D(soundSource, false, false, false);
-            //music.Volume = 0.5f;
-            //MessageBox.Show("Playing music" + randomSoundName);
+            //MessageBox.Show("Playing random sound" + randomSoundName);
         }
-
-        /*
-        public void PlayAmbientSoundSilence()
-        {
-            // Select a random sound name from the list
-            string soundName = "silence";
-            if (!_sounds.TryGetValue(soundName.ToLower(), out ISoundSource soundSource))
-            {
-                Console.WriteLine($"Sound name '{soundName}' not recognized.");
-                MessageBox.Show("Sound name not recognized. Please make sure the sound name is correct.");
-                return;
-            }
-
-            ambientSound = _soundEngine.Play2D(soundSource, false, false, false);
-            //MessageBox.Show("Playing ambient sound" + randomSoundName);
-        }
-        */
 
         public void PlaySound(string soundName)
         {
@@ -247,6 +318,7 @@ namespace Text_Dungeon_Crawler
 
             ISound sound = _soundEngine.Play2D(soundSource, false, false, false);
 
+            // for reverb enabled sounds:
             /*
             ISound sound = _soundEngine.Play2D(soundSource, false, false, true);
 
@@ -261,23 +333,25 @@ namespace Text_Dungeon_Crawler
 
                     // I3DL2Reverb
                     //
+                    //                                              1     2    3    4      5       6     7      8     9      10    11    12
                     //effectControl.EnableI3DL2ReverbSoundEffect(-1000, -100, 0f, 1.49f, 0.83f, -2602, 0.007f, 200, 0.011f, 100f, 100f, 5000f);
                     //
                     // 1-fRoomHF, 2-fRoomLF, 3-fDecayTime, 4-fDecayHFRatio, 5-fDecayLFRatio, 6-fReflections,
                     // 7-fReflectionsDelay, 8-fReverb, 9-fReverbDelay, 10-fDiffusion, 11-fDensity, 12-fHFReference
-                    //                                           1     2    3    4      5       6      7      8     9      10    11    12
-                    //effectControl.EnableI3DL2ReverbSoundEffect(-1000, -100, 0f, 1.49f, 0.83f, -2602, 0.3f, 200, 0.011f, 100f, 100f, 5000f);
+                    //                                           1     2    3    4      5       6      7    8     9    10    11    12
+                    //effectControl.EnableI3DL2ReverbSoundEffect(-1000, -100, 0f, 1.49f, 0.83f, -2602, 1.0f, 100, 1.0f, 100f, 100f, 5000f);
 
                     // WavesReverb
                     //
                     //effectControl.EnableWavesReverbSoundEffect(0f, 0f, 1000f, 0.001f);
                     //
                     // 1-fInGain, 2-fReverbMix, 3-fReverbTime, 4-fHighFreqRTRatio
-                    //                                         1    2   3     4
-                    //effectControl.EnableWavesReverbSoundEffect(0f, 0f, 100f, 0.001f);
+                    //                                           1    2   3     4
+                    //effectControl.EnableWavesReverbSoundEffect(0f, 0f, 400f, 0.001f);
                 }
             }
             */
+            
         }
 
         private void LoadSound(string soundName)
